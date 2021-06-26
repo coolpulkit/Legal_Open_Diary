@@ -4,8 +4,21 @@ const mongoose = require('mongoose');
 const passport = require('passport');
 const flash = require('connect-flash');
 const session = require('express-session');
-
+const path = require('path');
+const ejs = require('ejs');
 const app = express();
+
+// app.get('/:name', (req, res) => {
+//   res.send('Your name is ' + req.params.name + '\n');
+// });
+
+// app.get('/', (req,res) => {
+//   let name = 'Pulkit';
+//     res.render('dashboard', {
+//       userName: name
+//     })
+//     res.redirect("/");
+//   })
 
 // Passport Config
 require('./config/passport')(passport);
@@ -25,6 +38,7 @@ mongoose
 // EJS
 app.use(expressLayouts);
 app.set('view engine', 'ejs');
+app.set('views', path.join(__dirname, '/views'));
 
 // Express body parser
 app.use(express.urlencoded({ extended: true }));
@@ -56,7 +70,9 @@ app.use(function(req, res, next) {
 // Routes
 app.use('/', require('./routes/index.js'));
 app.use('/users', require('./routes/users.js'));
-
+var fetchRouter = require('./routes/dailycase');
+app.use('/', fetchRouter);
 const PORT = process.env.PORT || 5000;
 
 app.listen(PORT, console.log(`Server running on  ${PORT}`));
+
